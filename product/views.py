@@ -49,7 +49,31 @@ def fetch_product(request):
 
 @csrf_exempt
 def fetch_single_product(request):
-    pass
+    body = request.body
+    request_json = json.loads(body)
+    prod_id = request_json['id']
+
+    product_obj = Product.objects.filter(id=prod_id).first()
+    if not product_obj:
+        response = {
+            'message': 'Product with id does not exist',
+            'code': 500,  
+        }
+    else:    
+        product = {
+            'id': product_obj.id,
+            'name': product_obj.name,
+            'code': product_obj.code,
+            'price': product_obj.unit_price
+        }
+        response = {
+            'message': 'Fetched successfully',
+            'code': 200,
+            'product': product
+        }
+
+    return JsonResponse(response)
+
 
 @csrf_exempt
 def update_product(request):
