@@ -29,7 +29,23 @@ def create_product(request):
 
 @csrf_exempt
 def fetch_product(request):
-    pass
+    product_objects = Product.objects.all()
+    products = []
+    for product_obj in product_objects:
+        product = {
+            'id': product_obj.id,
+            'name': product_obj.name,
+            'code': product_obj.code,
+            'price': product_obj.unit_price
+        }
+        products.append(product)
+    response = {
+        'message': 'Fetched successfully',
+        'code': 200,
+        'products': products
+    }
+
+    return JsonResponse(response, safe=False)
 
 @csrf_exempt
 def fetch_single_product(request):
