@@ -77,8 +77,49 @@ def fetch_single_product(request):
 
 @csrf_exempt
 def update_product(request):
-    pass
+    body = request.body
+    request_json = json.loads(body)
+    prod_id = request_json['id']
+    product_obj = Product.objects.filter(id=prod_id).first()
+    if not product_obj:
+        response = {
+            'message': 'Product with id does not exist',
+            'code': 500,  
+        }
+    else:
+        try:
+            product_obj.name = request_json['name']
+            product_obj.code = request_json['code']
+            product_obj.unit_price = request_json['unit_price']
+            product_obj.save()
+            response = {
+                'message': 'Updated successfully',
+                'code': 200,
+                'id': product_obj.id,
+            }
+        except IntegrityError:
+            response = {
+            'message': 'Product with same code already exists',
+            'code': 500,
+            }
+
+    return JsonResponse(response, safe=False)
 
 @csrf_exempt
 def delete_product(request):
-    pass
+    body = request.body
+    request_json = json.loads(body)
+    prod_id = request_json['id']
+    product_obj = Product.objects.filter(id=prod_id).first()
+    if not product_obj:
+        response = {
+            'message': 'Product with id does not exist',
+            'code': 500,  
+        }
+    else:
+        product_obj.delete()
+        response = {
+            'message': 'Deleted successfully',
+            'code': 200,
+        }
+    return JsonResponse(response)
