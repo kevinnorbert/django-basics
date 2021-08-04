@@ -85,20 +85,11 @@ def update_customer(request):
         customer_obj.username = request_json['username']
         customer_obj.fullname = request_json['fullname']
         customer_obj.save()
-        customers = []
-        customer_objects = Customer.objects.all()
-        for customer_obj_temp in customer_objects:
-            customer = {
-                'id': customer_obj_temp.id,
-                'username': customer_obj_temp.username,
-                'fullname': customer_obj_temp.fullname
-            }
-            customers.append(customer)
+        
         response = {
             'message': 'Updated successfully',
             'code': 200,
             'id': customer_obj.id,
-            'updated customers': customers
         }
 
     return JsonResponse(response, safe=False)
@@ -117,18 +108,9 @@ def delete_customer(request):
         }
     else:
         customer_obj.delete()
-        customer_objects = Customer.objects.all()
-        customers = []
-        for customer_obj in customer_objects:
-            customer = {
-                'id': customer_obj.id,
-                'username': customer_obj.username,
-                'fullname': customer_obj.fullname
-            }
-            customers.append(customer)
+        
         response = {
             'message': 'Deleted successfully',
             'code': 200,
-            'customers': customers
         }
     return JsonResponse(response)        
