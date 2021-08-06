@@ -11,6 +11,7 @@ from customer.models import Customer
 @csrf_exempt
 def create_order(request):
     customer_exists = False
+    product_code_exists = True
     body = request.body
     request_json = json.loads(body)
     customer_name = request_json['customer_name']
@@ -21,7 +22,25 @@ def create_order(request):
                 customer_exists = True
                 break
         if customer_exists:
-            pass
+            lines = request_json['lines']
+            for line in lines:
+                request_product_code = line['product_code']
+                product_objects = Product.objects.all()
+                product_code_found = False
+                for product_object in product_objects:
+                    if product_object.code == request_product_code:
+                        product_code_found = True
+                        break
+                if not product_code_found:
+                    product_code_exists = False
+                    response = {
+                        "message": f"Product {request_product_code} does not exist",
+                        "status": False
+                    }
+                    break
+            if product_code_exists:
+                pass
+                
         else:
             response = {
             'message': "Customer doesn't exists",
