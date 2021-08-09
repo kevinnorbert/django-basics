@@ -12,4 +12,4 @@ class OrderLine(models.Model):
     qty = models.IntegerField()
     unit_price = models.FloatField()
     tax_rate = models.FloatField()
-    order_id = models.BigIntegerField()
+    order_id = models.ForeignKey(Order)
