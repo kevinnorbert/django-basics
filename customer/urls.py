@@ -23,5 +23,6 @@ urlpatterns = [
     path('fetch/', views.fetch_customers),
     path('fetch_single/', views.fetch_single),
     path('update/', views.update_customer),
-    path('delete/', views.delete_customer)
+    path('delete/', views.delete_customer),
+    path('', views.view_customer)
 ]

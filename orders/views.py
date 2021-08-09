@@ -11,7 +11,7 @@ from customer.models import Customer
 @csrf_exempt
 def create_order(request):
     customer_exists = False
-    product_code_exists = True
+    product_codes_exists = True
     body = request.body
     request_json = json.loads(body)
     customer_name = request_json['customer_name']
@@ -23,22 +23,24 @@ def create_order(request):
             break
     if customer_exists:
         lines = request_json['lines']
+        product_codes = []
         for line in lines:
-            request_product_code = line['product_code']
-            product_objects = Product.objects.all()
-            product_code_found = False
-            for product_object in product_objects:
-                if product_object.code == request_product_code:
-                    product_code_found = True
-                    break
-            if not product_code_found:
-                product_code_exists = False
+            product_code = line['product_code']
+            product_codes.append(product_code)
+        products = Product.objects.filter(code__in=product_codes).values_list('code', flat=True)
+        #Product.objects.filter(unit_price__contains=20)
+        print(products)
+
+        for line in lines:
+            request_product_code = line['product_code']            
+            if not request_product_code in products:
+                product_codes_exists = False
                 response = {
                     "message": f"Product {request_product_code} does not exist",
                     "status": False
                 }
                 break
-        if product_code_exists:
+        if product_codes_exists:
             try:
                 order_object = Order()
                 order_object.customer_name = customer_name
@@ -47,7 +49,7 @@ def create_order(request):
                 order_object.save()
                 for line in lines:
                     order_line_object = OrderLine()
-                    order_line_object.order_id = order_object.id
+                    order_line_object.order = order_object
                     order_line_object.product_name = line['product_name']
                     order_line_object.product_code = line['product_code']
                     order_line_object.unit_price = line['unit_price']
@@ -55,9 +57,11 @@ def create_order(request):
                     order_line_object.tax_rate = line['tax_rate']
                     order_line_object.save()
                 
+                
                 response = {
                     "message": "Order saved successfully",
-                    "status": True
+                    "status": True,
+                    "order-no": order_object.order_no
                 }
             except IntegrityError:
                 response = {

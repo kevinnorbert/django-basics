@@ -1,6 +1,6 @@
 import customer
 from django.shortcuts import render
-from django.http import JsonResponse, response
+from django.http import JsonResponse, request, response
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .models import Customer
@@ -114,3 +114,7 @@ def delete_customer(request):
             'code': 200,
         }
     return JsonResponse(response)        
+
+def view_customer(request):
+    customer_data = Customer.objects.all()
+    return render(request, 'view_customer.html', {'key': customer_data})

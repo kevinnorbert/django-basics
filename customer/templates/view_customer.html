@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div>
+        <h1>CUSTOMER DETAILS</h1>
+        <table class="table">
+            <tr>
+                <th><strong>#</strong></th>
+                <th><strong>User Name</strong></th>
+                <th><strong>Full Name</strong></th>
+                <th><strong>Actions</strong></th>
+            </tr>
+            {% for k in key %}
+            <tr>
+                <td>{{ forloop.counter }} </td>
+                <td>{{ k.username }}</td>
+                <td>{{ k.fullname }}</td>
+                <td>
+                    <button class="btn">ADD</button>
+                    <button class="btn">DELETE</button>
+                </td>           
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
