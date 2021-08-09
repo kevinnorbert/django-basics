@@ -5,4 +5,7 @@ from django.db import models
 class Customer(models.Model):
     username = models.CharField(max_length=50)
     fullname = models.CharField(max_length=200)
+    mobile_number = models.CharField(max_length=10)
+
+    
     

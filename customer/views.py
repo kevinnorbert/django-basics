@@ -14,6 +14,7 @@ def create_customer(request):
     customer_obj = Customer()
     customer_obj.username = request_json['username']
     customer_obj.fullname = request_json['fullname']
+    customer_obj.mobile_number = request_json['mobile_number']
     customer_obj.save()
 
     response = {
@@ -84,6 +85,7 @@ def update_customer(request):
     else:
         customer_obj.username = request_json['username']
         customer_obj.fullname = request_json['fullname']
+        customer_obj.mobile_number = request_json['mobile_number']
         customer_obj.save()
         
         response = {

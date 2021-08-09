@@ -17,6 +17,7 @@
                 <th><strong>#</strong></th>
                 <th><strong>User Name</strong></th>
                 <th><strong>Full Name</strong></th>
+                <th><strong>Mobile Number</strong></th>
                 <th><strong>Actions</strong></th>
             </tr>
             {% for k in key %}
@@ -24,6 +25,7 @@
                 <td>{{ forloop.counter }} </td>
                 <td>{{ k.username }}</td>
                 <td>{{ k.fullname }}</td>
+                <td>{{ k.mobile_number}}</td>
                 <td>
                     <button class="btn">ADD</button>
                     <button class="btn">DELETE</button>
