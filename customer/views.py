@@ -62,7 +62,8 @@ def fetch_single(request):
         customer = {
                 'id': customer_obj.id,
                 'username': customer_obj.username,
-                'fullname': customer_obj.fullname
+                'fullname': customer_obj.fullname,
+                'mobile_number': customer_obj.mobile_number
         }
         response = {
             'message': 'Fetched successfully',

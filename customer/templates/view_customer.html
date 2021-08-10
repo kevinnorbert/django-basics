@@ -13,69 +13,11 @@
 <body>
     <div id="app" class="container">
         <h1>CUSTOMER</h1>
-        <!-- <button class="btn add" @click="inputPopup=true">ADD</button>
-        <div class="btns pop" v-if="inputPopup">
-            <transition name="customeradd">
-                <div class="modal-mask">
-                    <div class="modal-wrapper">
-                        <div class="modal-dialogue">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" @click="inputPopup=false">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                    <h4>Enter the customer details</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label for="username">User Name</label>
-                                        <input type="text" name="username" placeholder="Enter User Name" class="form-control" v-model="userName">
-                                        <label for="fullname">Full Name</label>
-                                        <input type="text" name="fullname" placeholder="Enter Full Name" class="form-control" v-model="fullName">
-                                        <label for="mobilenumber">Mobile Number</label>
-                                        <input type="text" name="mobilenumber" placeholder="Enter Mobile Number" class="form-control" v-model="mobileNumber">
-                                        <button class="form-control btn" @click="addCustomer">SUBMIT</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </transition>
-        </div> -->
-
-        <!--BOOTSTRAP MODAL HERE-->
-
-        <button type="button" class="add" data-toggle="modal" data-target="#exampleModal">
+        
+        <button type="button" class="add" data-toggle="modal" data-target="#editCustModal" @click='updateCustomer({})'>
            ADD
-          </button>
-          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h4 class="modal-title" id="exampleModalLabel">Enter the customer details</h4>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="username">User Name</label>
-                        <input type="text" name="username" placeholder="Enter User Name" class="form-control" v-model="userName">
-                        <label for="fullname">Full Name</label>
-                        <input type="text" name="fullname" placeholder="Enter Full Name" class="form-control" v-model="fullName">
-                        <label for="mobilenumber">Mobile Number</label>
-                        <input type="text" name="mobilenumber" placeholder="Enter Mobile Number" class="form-control" v-model="mobileNumber">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn" @click="addCustomer">SUBMIT</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
+        </button>
+         
         <!--BOOTSTRAP MODAL END-->
 
         <table class="table">
@@ -92,11 +34,44 @@
                 <td>[[k.fullname]]</td>
                 <td>[[k.mobile_number]]</td>
                 <td>
-                    <button class="btn">EDIT</button>
+                    <!--BOOTSTRAP MODAL HERE-->
+
+                    <button type="button" class="btn" data-toggle="modal" data-target="#editCustModal" @click="updateCustomer(k)">
+                        EDIT
+                    </button>
+                    
+            
+                    <!--BOOTSTRAP MODAL END-->
                     <button class="btn" @click="deleteCustomer(k.id)">DELETE</button>
                 </td>           
             </tr>
         </table>
+        <div class="modal fade" id="editCustModal" tabindex="-1" role="dialog" aria-labelledby="editCustModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h4 class="modal-title" id="editCustModallLabel">Enter the customer details</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="username">User Name</label>
+                        <input type="text" name="username" v-model="edited_item.username" placeholder="Enter User Name" class="form-control">
+                        <label for="fullname">Full Name</label>
+                        <input type="text" name="fullname" v-model="edited_item.fullname" placeholder="Enter Full Name" class="form-control">
+                        <label for="mobilenumber">Mobile Number</label>
+                        <input type="text" name="mobilenumber" v-model="edited_item.mobile_number" placeholder="Enter Mobile Number" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn" data-dismiss="modal">Close</button>
+                <button type="button" class="btn" @click="submitCustomer">SUBMIT</button>
+                </div>
+            </div>
+            </div>
+        </div>
         
         
     </div>
@@ -119,9 +94,46 @@
             userName: '',
             fullName: '',
             mobileNumber: 0,
-            customers: []
+            customers: [],
+            editedIndex: -1,
+            edited_item: {},
+            isAdd: false
+        },
+        computed:{
+            isNewCustomer(){
+                return this.editedIndex == -1
+            }
         },
         methods:{
+            validateFields(){
+                if (!(Number.isInteger(this.edited_item.mobile_number * 1) && this.edited_item.mobile_number.length == 10)){
+
+                    new Noty({
+                        text: 'Invalid Mobile Number',
+                        theme: 'mint',
+                        type: 'warning',
+                        timeout: 2000,
+                        layout: 'bottomRight'
+                    }).show();
+                    console.log('Not mobile number')
+                    return false
+                }
+                  
+                return true
+            },
+            updateCustomer(customer){
+                let editedIndex = this.customers.indexOf(customer)
+                if(editedIndex != -1){
+                    this.edited_item = this.customers[editedIndex]
+                    this.isAdd = false
+                }
+                    
+                else{
+                    this.edited_item = {}
+                    this.isAdd = true
+                }
+                    
+            },
             deleteCustomer(custId){
                 console.log('Customer deleted: ',custId)
                 let url = '/customer/delete/'
@@ -143,42 +155,35 @@
                     console.log(response)
                 })
             },
-            addCustomer(){
+            submitCustomer(){
                 
-                if(Number.isInteger(this.mobileNumber * 1) && this.mobileNumber.length == 10){
+                if(this.validateFields()){
                     console.log('Is mobile number')
-                    let finalMobileNumber = ''
-                    for(var i = 0; i < this.mobileNumber.length; i++){
-                        if(i % 3 == 0 && i < 9 && i > 0){
-                            finalMobileNumber += '-'
-                        }
-                        finalMobileNumber += this.mobileNumber[i]
-                    }
-                    console.log('Mobile :', finalMobileNumber)
-                    console.log('customer added')
                     let url = '/customer/create/'
                     let body = {
-                        "username": this.userName,
-                        "fullname": this.fullName,
-                        "mobile_number": finalMobileNumber
+                        "username": this.edited_item.username,
+                        "fullname": this.edited_item.fullname,
+                        "mobile_number": this.edited_item.mobile_number
+                    }
+                    if(!(this.isAdd)){
+                        url = '/customer/update/'
+                        body['id'] = this.edited_item.id
                     }
                     axios.post(url,body).then(response=>{
                         console.log(response)
-                        $('#exampleModal').modal("hide")
+                        $('#editCustModal').modal("hide")
+                        new Noty({
+                            text: 'Successfully Added',
+                            theme: 'sunset',
+                            type: 'success',
+                            timeout: 2000,
+                            layout: 'bottomRight'
+                        }).show();
                         this.fetchCustomers()
                     })
 
                 }
-                else{
-                    new Noty({
-                        text: 'Invalid Mobile Number',
-                        theme: 'mint',
-                        type: 'warning',
-                        timeout: 2000,
-                        layout: 'bottomRight'
-                    }).show();
-                    console.log('Not mobile number')
-                }
+                
 
             }
         },
