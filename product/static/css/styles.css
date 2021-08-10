@@ -1,0 +1,10 @@
+h1{
+    display: inline-block;
+}
+.add{
+   float: right;
+   margin-top: 40px;
+   margin-right: 0;
+   margin-left: auto;
+
+}

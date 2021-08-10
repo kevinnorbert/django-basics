@@ -120,5 +120,5 @@ def delete_customer(request):
     return JsonResponse(response)        
 
 def view_customer(request):
-    customer_data = Customer.objects.all()
-    return render(request, 'view_customer.html', {'key': customer_data})
+    #customer_data = Customer.objects.all()
+    return render(request, 'view_customer.html')
