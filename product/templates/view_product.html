@@ -173,6 +173,8 @@
             },
             submitProduct(){
                 if(this.validateFeilds()){
+                    let response_text = 'Successfully Added'
+                    let response_type = 'success'
                     let url = '/product/create/'
                     let body = {
                         "name": this.subjectProduct.name,
@@ -187,12 +189,19 @@
                     }
                     console.log(url, '\n', body)
                     axios.post(url, body).then(response=>{
-                        console.log(response)
+                        console.log(response.data)
+                        if(!(response.data.status)){
+                            
+                            response_text = 'Product code Already exists'
+                            response_type = 'warning'
+                        }
+                            
+                        
                         $('#editProdModal').modal("hide")
                         new Noty({
-                            text: 'Successfully Added',
+                            text: response_text,
                             theme: 'sunset',
-                            type: 'success',
+                            type: response_type,
                             timeout: 2000,
                             layout: 'bottomRight'
                         }).show();

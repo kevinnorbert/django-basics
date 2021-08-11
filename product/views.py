@@ -99,12 +99,14 @@ def update_product(request):
             product_obj.tax_rate = request_json['tax_rate']
             product_obj.save()
             response = {
+                'status': True,
                 'message': 'Updated successfully',
                 'code': 200,
                 'id': product_obj.id,
             }
         except IntegrityError:
             response = {
+            'status': False,
             'message': 'Product with same code already exists',
             'code': 500,
             }
