@@ -23,5 +23,6 @@ urlpatterns = [
     path('fetch/', views.fetch_product),
     path('fetch_single/', views.fetch_single_product),
     path('update/', views.update_product),
-    path('delete/', views.delete_product)
+    path('delete/', views.delete_product),
+    path('', views.view_product)
 ]

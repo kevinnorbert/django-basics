@@ -14,7 +14,7 @@
     <div id="app" class="container">
         <h1>PRODUCT</h1>
         
-        <button type="button" class="add" data-toggle="modal" data-target="#editCustModal" @click='updateCustomer({})'>
+        <button type="button" class="btn add" data-toggle="modal" data-target="#editProdModal" @click='updateProduct({})'>
            ADD
         </button>
          
@@ -27,49 +27,61 @@
                 <th><strong>Product Code</strong></th>
                 <th><strong>Product Unit Price</strong></th>
                 <th><strong>Tax Rate</strong></th>
+                <th><strong>Actions</strong></th>
+
             </tr>
             <tr v-for="product in products">
                 <td>[[product.id]]</td>
-                <td>[[product.username]] </td>
-                <td>[[product.fullname]]</td>
-                <td>[[product.mobile_number]]</td>
+                <td>[[product.name]] </td>
+                <td>[[product.code]]</td>
+                <td>[[product.price]]</td>
+                <td>[[product.tax_rate]]</td>
                 <td>
-                    <button type="button" class="btn" data-toggle="modal" data-target="#editProdModal" @click="updateProduct(k)">
+                    <button type="button" class="btn" data-toggle="modal" data-target="#editProdModal" @click="updateProduct(product)">
                         EDIT
                     </button>
-                    <button class="btn" @click="deleteCustomer(k.id)">DELETE</button>
+                    <button class="btn" @click="deleteProduct(product.id)">DELETE</button>
                 </td>           
             </tr>
         </table>
-<!--         
+
+        <!--MODAL -->
         <div class="modal fade" id="editProdModal" tabindex="-1" role="dialog" aria-labelledby="editProdModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                <h4 class="modal-title" id="editProdModalLabel">Enter the customer details</h4>
+                <h4 class="modal-title" id="editProdModallLabel">Enter the product details</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="username">User Name</label>
-                        <input type="text" name="username" v-model="edited_item.username" placeholder="Enter User Name" class="form-control">
-                        <label for="fullname">Full Name</label>
-                        <input type="text" name="fullname" v-model="edited_item.fullname" placeholder="Enter Full Name" class="form-control">
-                        <label for="mobilenumber">Mobile Number</label>
-                        <input type="text" name="mobilenumber" v-model="edited_item.mobile_number" placeholder="Enter Mobile Number" class="form-control">
+                        <label>Product Name</label>
+                        <input type="text" placeholder="Enter Product Name" class="form-control" v-model="subjectProduct.name">
+                    </div>
+                    <div class="form-group">
+                        <label>Product Unit Price</label>
+                        <input type="text" placeholder="Product Unit Price" class="form-control" v-model="subjectProduct.unit_price">
+                    </div>
+                    <div class="form-group">
+                        <label>Product Code</label>
+                        <input type="text" placeholder="Enter Product Code" class="form-control" v-model="subjectProduct.code">
+                    </div>
+                    <div class="form-group">
+                        <label>Product Tax Rate</label>
+                        <input type="text" placeholder="Enter Product Tax Rate" class="form-control" v-model="subjectProduct.tax_rate">
                     </div>
                 </div>
                 <div class="modal-footer">
-                <button type="button" class="btn" data-dismiss="modal">Close</button>
-                <button type="button" class="btn" @click="submitCustomer">SUBMIT</button>
+                    <button type="button" class="btn" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn" @click="submitProduct">SUBMIT</button>
                 </div>
             </div>
             </div>
-        </div> -->
-        
-        
+        </div>
+        <!--MODAL-->
+
     </div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -93,82 +105,65 @@
             productTaxRate:0,
             products: [],
             editedIndex: -1,
-            edited_item: {},
+            subjectProduct: {},
             isAdd: false
-        },
-        computed:{
-            isNewCustomer(){
-                return this.editedIndex == -1
-            }
+            
         },
         methods:{
-            validateFields(){
-                if (!(Number.isInteger(this.edited_item.mobile_number * 1) && this.edited_item.mobile_number.length == 10)){
-
-                    new Noty({
-                        text: 'Invalid Mobile Number',
-                        theme: 'mint',
-                        type: 'warning',
-                        timeout: 2000,
-                        layout: 'bottomRight'
-                    }).show();
-                    console.log('Not mobile number')
-                    return false
-                }
-                  
+            validateFeilds(){
                 return true
             },
-            updateCustomer(customer){
-                let editedIndex = this.customers.indexOf(customer)
-                if(editedIndex != -1){
-                    this.edited_item = this.customers[editedIndex]
-                    this.isAdd = false
-                }
-                    
-                else{
-                    this.edited_item = {}
-                    this.isAdd = true
-                }
-                    
-            },
-            deleteCustomer(custId){
-                console.log('Customer deleted: ',custId)
-                let url = '/customer/delete/'
-                let body = {
-                    "id": custId
-                };
-                axios.post(url, body).then(response=>{
-                    console.log(response)
-                    this.fetchCustomers()
-                });
-            },
             fetchProducts(){
-                this.customers = []
+                this.products = []
                 let url = '/product/fetch/';
                 let body = {};
                 axios.post(url, body).then(response=>{
-                    let products = response.data.customers
-                    this.products.push(...customers)
+                    let products = response.data.products
+                    this.products.push(...products)
                     console.log(response)
                 })
             },
-            submitCustomer(){
-                
-                if(this.validateFields()){
-                    console.log('Is mobile number')
-                    let url = '/customer/create/'
+            deleteProduct(prodId){
+                let url = '/product/delete/'
+                let body = {
+                    "id": prodId
+                }
+                axios.post(url, body).then(response=>{
+                    console.log('Product deleted :', prodId)
+                    this.fetchProducts()
+                })
+            },
+            updateProduct(product){
+                let tempIndex = this.products.indexOf(product)
+                if(tempIndex != -1){
+                    this.subjectProduct = this.products[tempIndex]
+                    this.isAdd = false
+                    console.log('Doing update operation')
+                }
+                else{
+                    this.isAdd = true
+                    this.subjectProduct = {}
+                    console.log('Doing addition operation')
+                }
+            },
+            submitProduct(){
+                if(this.validateFeilds()){
+                    let url = '/product/create/'
                     let body = {
-                        "username": this.edited_item.username,
-                        "fullname": this.edited_item.fullname,
-                        "mobile_number": this.edited_item.mobile_number
+                        "name": this.subjectProduct.name,
+                        "code": this.subjectProduct.code,
+                        "unit_price": this.subjectProduct.unit_price,
+                        "tax_rate":this.subjectProduct.tax_rate
                     }
+                    console.log('this.isAdd = ', this.isAdd)
                     if(!(this.isAdd)){
-                        url = '/customer/update/'
-                        body['id'] = this.edited_item.id
+                        url = '/product/update/'
+                        body['id'] = this.subjectProduct.id
                     }
-                    axios.post(url,body).then(response=>{
+                    console.log(url, '\n', body)
+                    axios.post(url, body).then(response=>{
                         console.log(response)
-                        $('#editCustModal').modal("hide")
+                        $('#editProdModal').modal("hide")
                         new Noty({
                             text: 'Successfully Added',
                             theme: 'sunset',
@@ -176,16 +171,16 @@
                             timeout: 2000,
                             layout: 'bottomRight'
                         }).show();
-                        this.fetchCustomers()
+                        this.fetchProducts()
                     })
+                       
 
                 }
-                
-
             }
+           
         },
         mounted(){
-            this.fetchCustomers()
+            this.fetchProducts()
         }
     });
 </script>

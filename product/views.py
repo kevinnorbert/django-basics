@@ -14,14 +14,17 @@ def create_product(request):
         product_object.name = request_json['name']
         product_object.code = request_json['code']
         product_object.unit_price = request_json['unit_price']
+        product_object.tax_rate = request_json['tax_rate']
         product_object.save()
         response = {
+        'status': True,
         'message': 'Created successfully',
         'code': 200,
         'id': product_object.id
         }
     except IntegrityError:
         response = {
+        'status': False,
         'message': 'Product with same code already exists',
         'code': 500,
         }
@@ -36,7 +39,8 @@ def fetch_product(request):
             'id': product_obj.id,
             'name': product_obj.name,
             'code': product_obj.code,
-            'price': product_obj.unit_price
+            'unit_price': product_obj.unit_price,
+            'tax_rate':product_obj.tax_rate
         }
         products.append(product)
     response = {
@@ -64,7 +68,7 @@ def fetch_single_product(request):
             'id': product_obj.id,
             'name': product_obj.name,
             'code': product_obj.code,
-            'price': product_obj.unit_price
+            'unit_price': product_obj.unit_price
         }
         response = {
             'message': 'Fetched successfully',
@@ -123,3 +127,7 @@ def delete_product(request):
             'code': 200,
         }
     return JsonResponse(response)
+
+def view_product(request):
+    #customer_data = Customer.objects.all()
+    return render(request, 'view_product.html')

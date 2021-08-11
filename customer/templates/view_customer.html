@@ -14,7 +14,7 @@
     <div id="app" class="container">
         <h1>CUSTOMER</h1>
         
-        <button type="button" class="add" data-toggle="modal" data-target="#editCustModal" @click='updateCustomer({})'>
+        <button type="button" class="btn add" data-toggle="modal" data-target="#editCustModal" @click='updateCustomer({})'>
            ADD
         </button>
          
@@ -34,14 +34,9 @@
                 <td>[[k.fullname]]</td>
                 <td>[[k.mobile_number]]</td>
                 <td>
-                    <!--BOOTSTRAP MODAL HERE-->
-
                     <button type="button" class="btn" data-toggle="modal" data-target="#editCustModal" @click="updateCustomer(k)">
                         EDIT
                     </button>
-                    
-            
-                    <!--BOOTSTRAP MODAL END-->
                     <button class="btn" @click="deleteCustomer(k.id)">DELETE</button>
                 </td>           
             </tr>
