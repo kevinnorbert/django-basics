@@ -68,7 +68,8 @@ def fetch_single_product(request):
             'id': product_obj.id,
             'name': product_obj.name,
             'code': product_obj.code,
-            'unit_price': product_obj.unit_price
+            'unit_price': product_obj.unit_price,
+            'tax_rate': product_obj.tax_rate
         }
         response = {
             'message': 'Fetched successfully',
@@ -95,6 +96,7 @@ def update_product(request):
             product_obj.name = request_json['name']
             product_obj.code = request_json['code']
             product_obj.unit_price = request_json['unit_price']
+            product_obj.tax_rate = request_json['tax_rate']
             product_obj.save()
             response = {
                 'message': 'Updated successfully',
