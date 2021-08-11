@@ -99,10 +99,10 @@
         delimiters: ['[[', ']]'],
         data:{
 
-            productName: '',
-            productCode: '',
-            productUnitPrice: 0,
-            productTaxRate:0,
+            // productName: '',
+            // productCode: '',
+            // productUnitPrice: 0,
+            // productTaxRate:0,
             products: [],
             editedIndex: -1,
             subjectProduct: {},
@@ -111,7 +111,16 @@
         },
         methods:{
             validateFeilds(){
+                if(
+                    ! this.subjectProduct.name && 
+                    ! this.subjectProduct.code &&
+                    ! this.subjectProduct.unit_price
+                ){
+
+                    return false
+                }
                 return true
+                
             },
             fetchProducts(){
                 this.products = []

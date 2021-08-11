@@ -15,7 +15,7 @@ def create_customer(request):
     customer_obj.username = request_json['username']
     customer_obj.fullname = request_json['fullname']
     customer_obj.mobile_number = request_json['mobile_number']
-    customer_obj.save()
+    customer_obj.save(using='')
 
     response = {
         'message': 'Created successfully',
@@ -27,7 +27,7 @@ def create_customer(request):
 
 @csrf_exempt
 def fetch_customers(request):
-    customer_objects = Customer.objects.all()
+    customer_objects = Customer.objects.using('').all()
     customers = []
     for customer_obj in customer_objects:
         customer = {
@@ -78,7 +78,7 @@ def update_customer(request):
     body = request.body
     request_json = json.loads(body)
     cust_id = request_json['id']
-    customer_obj = Customer.objects.filter(id=cust_id).first()
+    customer_obj = Customer.objects.using('').filter(id=cust_id).first()
     if not customer_obj:
         response = {
             'message': 'Customer with id does not exist',
@@ -104,7 +104,7 @@ def delete_customer(request):
     body = request.body
     request_json = json.loads(body)
     cust_id = request_json['id']
-    customer_obj = Customer.objects.filter(id=cust_id).first()
+    customer_obj = Customer.objects.using('').filter(id=cust_id).first()
     if not customer_obj:
         response = {
             'message': 'Customer with id does not exist',
