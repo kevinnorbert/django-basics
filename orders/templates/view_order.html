@@ -47,17 +47,17 @@
         },
         methods:{
             firstFiveCustomers(){
-                if(this.customerSearchSrting == '')
-                    return this.fetched_customers.slice(0, 5)
-                else{
+                // if(this.customerSearchSrting == '')
+                //     return this.fetched_customers.slice(0, 5)
+                // else{
                     let tempCustomers = []
                     for(var i=0; i<this.fetched_customers.length; i++){
-                        if(this.fetched_customers[i].startsWith(this.customerSearchSrting)){
+                        if(this.fetched_customers[i].toLowerCase().startsWith(this.customerSearchSrting.toLowerCase())){
                             tempCustomers.push(this.fetched_customers[i])
                         }
                     }
                     return tempCustomers.slice(0, 5)
-                }
+                // }
             },
             fetchCustomers(){
                 this.fetched_customers = []
