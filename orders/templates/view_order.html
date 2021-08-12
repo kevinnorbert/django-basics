@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/styles-order.css?v=3">
+</head>
+<body>
+    <div id="vueapp" class="container">
+        <h1>ORDERS</h1>
+        <div class="jumbotron">
+            <div class="dropdown">
+                <button class="btn selectButton dropdown-toggle" type="button" data-toggle="dropdown">
+                    Select Customers
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu ">
+                    <li class="list-group-item"><input v-model="customerSearchSrting" class="form-control form-control-sm" type="text" placeholder="Search . . "></li>
+                    <li class="list-group-item" v-for="customer in firstFiveCustomers()" @click="selectedCustomer=customer">[[customer]]</li>
+                </ul>
+                <span>[[selectedCustomer]]</span>
+            </div>
+
+        </div>
+
+    </div>    
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css" integrity="sha512-NXUhxhkDgZYOMjaIgd89zF2w51Mub53Ru3zCNp5LTlEzMbNNAjTjDbpURYGS5Mop2cU4b7re1nOIucsVlrx9fA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.js" integrity="sha512-mgZL3SZ/vIooDg2mU2amX6NysMlthFl/jDbscSRgF/k3zmICLe6muAs7YbITZ+61FeUoo1plofYAocoR5Sa1rQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!--VUE JS CODE HERE-->
+<script>
+    var app = new Vue({
+        el:"#vueapp",
+        delimiters: ['[[', ']]'],
+        data:{
+            customerSearchSrting: '',
+            fetched_customers : [],
+            selectedCustomer: ''
+        },
+        methods:{
+            firstFiveCustomers(){
+                if(this.customerSearchSrting == '')
+                    return this.fetched_customers.slice(0, 5)
+                else{
+                    let tempCustomers = []
+                    for(var i=0; i<this.fetched_customers.length; i++){
+                        if(this.fetched_customers[i].startsWith(this.customerSearchSrting)){
+                            tempCustomers.push(this.fetched_customers[i])
+                        }
+                    }
+                    return tempCustomers.slice(0, 5)
+                }
+            },
+            fetchCustomers(){
+                this.fetched_customers = []
+                let url = '/customer/fetch/';
+                let body = {};
+                axios.post(url, body).then(response=>{
+                    let customers = response.data.customers
+                    for(var i = 0; i < customers.length; i++){
+                        let tempName = customers[i].fullname
+                        this.fetched_customers.push(tempName)
+                    }
+                    console.log(customers)
+                    console.log(response)
+                })
+            }
+        },
+        mounted(){
+            this.fetchCustomers()
+        }
+    });
+</script>
+
+</html>

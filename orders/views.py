@@ -1,3 +1,4 @@
+from product.views import view_product
 from django.shortcuts import render
 from django.http import JsonResponse, response
 from django.views.decorators.csrf import csrf_exempt
@@ -68,18 +69,14 @@ def create_order(request):
                     "message": "Order already exists",
                     "status": True
                 }
-
-
-                    
-
-
-
     else:
         response = {
         'message': "Customer doesn't exists",
         'code': 500,
         }
-    
     return JsonResponse(response, safe=False)
-    
+
+def view_order(request):
+    return render(request, 'view_order.html')
+       
 

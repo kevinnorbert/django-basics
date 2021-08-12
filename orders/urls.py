@@ -20,5 +20,6 @@ from . import views
 urlpatterns = [
     
     path('create/', views.create_order),
+    path('', views.view_order)
     
 ]
