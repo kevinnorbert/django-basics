@@ -1,0 +1,46 @@
+h1{
+    width: 100%;
+    text-align: center;
+}
+.selectButton{
+    background-color: rgb(168, 166, 166);
+}
+
+.list-group-item:hover:not(:first-child){
+    background-color: rgb(168, 166, 166);
+    cursor: pointer;
+}
+.selectGroup{
+    margin: 0 auto;
+    width: 30%;
+}
+.out{
+    margin: 0 auto;    
+    width: 20%;
+}
+.centralVertical{
+    margin-top: 5%;
+    margin-left: auto;
+    width: 60%;
+}
+.scrollable{
+    height: 300px;
+    overflow-y: scroll;
+    overflow-x:unset;
+    width: 100%;
+    
+}
+table{
+    width:100%;
+    table-layout: fixed;
+}
+td{
+    width: 50px;
+    height: auto;
+    word-wrap: break-word;
+    padding: auto;
+    text-align: center;
+}
+th{
+    text-align: center;
+}

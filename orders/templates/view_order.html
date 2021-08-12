@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/styles-order.css?v=3">
+    <link rel="stylesheet" type="text/css" href="/static/css/styles_order.css?v=2">
 </head>
 <body>
     <div id="vueapp" class="container">
         <h1>ORDERS</h1>
         <div class="jumbotron">
-            <div class="dropdown">
+            <div class="dropdown selectGroup">
                 <button class="btn selectButton dropdown-toggle" type="button" data-toggle="dropdown">
                     Select Customers
                     <span class="caret"></span>
@@ -21,9 +21,53 @@
                     <li class="list-group-item"><input v-model="customerSearchSrting" class="form-control form-control-sm" type="text" placeholder="Search . . "></li>
                     <li class="list-group-item" v-for="customer in firstFiveCustomers()" @click="selectedCustomer=customer">[[customer]]</li>
                 </ul>
-                <span>[[selectedCustomer]]</span>
+                <button type="button" class="btn selectButton" data-toggle="modal" data-target="#productsModal">
+                    Select Products
+                </button> 
             </div>
+            <div class="container out"><h3>[[selectedCustomer]]</h3></div>
+        </div>
+        <div id="productsModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="productModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog centralVertical" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="productModalLongTitle">Products</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body ">
+                        <table class="table">
+                            <tr>
+                                <th><strong>#</strong></th>
+                                <th><strong>Product Name</strong></th>
+                                <th><strong>Product Code</strong></th>
+                                <th><strong>Product Unit Price</strong></th>
+                                <th><strong>Tax Rate</strong></th>
+                                <th><strong>Actions</strong></th>
+                            </tr>
+                        </table>
 
+                        <div class="scrollable">
+                            <table class="table">
+                                <tr v-for="product in fetched_products">
+                                    <td>[[product.id]]</td>
+                                    <td>[[product.name]] </td>
+                                    <td>[[product.code]]</td>
+                                    <td>[[product.unit_price]]</td>
+                                    <td>[[product.tax_rate]]</td>
+                                    <td>Dummy</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn selectButton" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn selectButton">Save changes</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>    
@@ -43,21 +87,19 @@
         data:{
             customerSearchSrting: '',
             fetched_customers : [],
-            selectedCustomer: ''
+            selectedCustomer: '',
+            fetched_products: []
         },
         methods:{
             firstFiveCustomers(){
-                // if(this.customerSearchSrting == '')
-                //     return this.fetched_customers.slice(0, 5)
-                // else{
-                    let tempCustomers = []
-                    for(var i=0; i<this.fetched_customers.length; i++){
-                        if(this.fetched_customers[i].toLowerCase().startsWith(this.customerSearchSrting.toLowerCase())){
-                            tempCustomers.push(this.fetched_customers[i])
-                        }
+                let tempCustomers = []
+                for(var i=0; i<this.fetched_customers.length; i++){
+                    if(this.fetched_customers[i].toLowerCase().startsWith(this.customerSearchSrting.toLowerCase())){
+                        tempCustomers.push(this.fetched_customers[i])
                     }
-                    return tempCustomers.slice(0, 5)
-                // }
+                }
+                return tempCustomers.slice(0, 5)
+                
             },
             fetchCustomers(){
                 this.fetched_customers = []
@@ -72,10 +114,21 @@
                     console.log(customers)
                     console.log(response)
                 })
+            },
+            fetchProducts(){
+                this.fetched_customers = []
+                let url = '/product/fetch/';
+                let body = {};
+                axios.post(url, body).then(response=>{
+                    console.log(response)
+                    let products = response.data.products
+                    this.fetched_products.push(...products)
+                })
             }
         },
         mounted(){
-            this.fetchCustomers()
+            this.fetchCustomers(),
+            this.fetchProducts()
         }
     });
 </script>
