@@ -1,4 +1,4 @@
-h1{
+h1,h3{
     width: 100%;
     text-align: center;
 }
@@ -11,8 +11,12 @@ h1{
     cursor: pointer;
 }
 .selectGroup{
+    margin: auto;
+    text-align: center;
+    width:50%;
+}
+button{
     margin: 0 auto;
-    width: 30%;
 }
 .out{
     margin: 0 auto;    
@@ -43,4 +47,7 @@ td{
 }
 th{
     text-align: center;
+}
+input[type="number"]{
+    width: 70px;
 }

@@ -6,18 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/styles_order.css?v=2">
+    <link rel="stylesheet" type="text/css" href="/static/css/stylesOrder.css?v=2">
 </head>
 <body>
     <div id="vueapp" class="container">
         <h1>ORDERS</h1>
-        <div class="jumbotron">
+        <!--SELECT-->
+        <div class="jumbotron" style="height: 250px;">
+            <h3>Select customers and products here</h3>
             <div class="dropdown selectGroup">
                 <button class="btn selectButton dropdown-toggle" type="button" data-toggle="dropdown">
-                    Select Customers
+                    Select Customer
                     <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu ">
+                <ul class="dropdown-menu selectGroup">
                     <li class="list-group-item"><input v-model="customerSearchSrting" class="form-control form-control-sm" type="text" placeholder="Search . . "></li>
                     <li class="list-group-item" v-for="customer in firstFiveCustomers()" @click="selectedCustomer=customer">[[customer]]</li>
                 </ul>
@@ -27,6 +29,57 @@
             </div>
             <div class="container out"><h3>[[selectedCustomer]]</h3></div>
         </div>
+        <!--SELECT-->
+
+        <!--PRODUCTS-->
+        <div>
+            <h3>Products</h3>
+            <div class="jumbotron scrollable" style="height: 250px;">
+                <table class="table">
+                    <tr>
+                        <th><strong>Product Name</strong></th>
+                        <th><strong>Product Code</strong></th>
+                        <th><strong>Product Unit Price</strong></th>
+                        <th><strong>Tax Rate</strong></th>
+                        <th><strong>Quantity</strong></th>
+                        <th><strong>Discount</strong></th>
+                        <th><strong>Actions</strong></th>
+                    </tr>
+                    <tr v-for="(product, index) in selectedProducts">
+                        <td>[[product.name]] </td>
+                        <td>[[product.code]]</td>
+                        <td>[[product.unit_price]]</td>
+                        <td>[[product.tax_rate]]</td>
+                        <td><input type="number" step="1" v-model="product.quantity" class="form-control" v-on:change="quantityProcess(product)" v-on:keyup="quantityProcess(product)"></td>
+                        <td><input type="number" step="1" v-model="product.discountPercent" class="form-control"  v-on:change="quantityProcess(product)" v-on:keyup="quantityProcess(product)"></td>
+                        <td><button type="button" class="btn selectButton" @click="deleteSelected(index)">DELETE</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <!--PRODUCTS-->
+
+        <div>
+            <h3>Bill</h3>
+            <div class="jumbotron scrollable" style="height: 250px;">
+                <table class="table">
+                    <tr>
+                        <th><strong>Product Name</strong></th>
+                        <th><strong>Quantity</strong></th>
+                        <th><strong>Discount Amount</strong></th>
+                        <th><strong>Price</strong></th>
+                        
+                    </tr>
+                    <tr v-for="(product, index) in selectedProducts">
+                        <td>[[product.name]] </td>
+                        <td>[[product.quantity]]</td>
+                        <td>[[product.discountAmount]]</td>
+                        <td>[[product.netPrice]]</td>
+                    </tr>
+                </table>                
+            </div>
+        </div>
+        <!--MODAL-->
         <div id="productsModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="productModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog centralVertical" role="document">
                 <div class="modal-content">
@@ -39,7 +92,6 @@
                     <div class="modal-body ">
                         <table class="table">
                             <tr>
-                                <th><strong>#</strong></th>
                                 <th><strong>Product Name</strong></th>
                                 <th><strong>Product Code</strong></th>
                                 <th><strong>Product Unit Price</strong></th>
@@ -51,12 +103,11 @@
                         <div class="scrollable">
                             <table class="table">
                                 <tr v-for="product in fetched_products">
-                                    <td>[[product.id]]</td>
                                     <td>[[product.name]] </td>
                                     <td>[[product.code]]</td>
                                     <td>[[product.unit_price]]</td>
                                     <td>[[product.tax_rate]]</td>
-                                    <td>Dummy</td>
+                                    <td><input type="checkbox" :value="product" v-model="selectedProducts"></td>
                                 </tr>
                             </table>
                         </div>
@@ -64,11 +115,12 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn selectButton" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn selectButton">Save changes</button>
+                        <!-- <button type="button" class="btn selectButton" @click="submitSelectedProducts">Save changes</button> -->
                     </div>
                 </div>
             </div>
         </div>
+        <!--MODAL-->
 
     </div>    
 </body>
@@ -85,12 +137,33 @@
         el:"#vueapp",
         delimiters: ['[[', ']]'],
         data:{
+           
             customerSearchSrting: '',
             fetched_customers : [],
             selectedCustomer: '',
-            fetched_products: []
+            fetched_products: [],
+            selectedProducts:[]
         },
         methods:{
+            quantityProcess(product){
+                console.log('Quantity = ',product['quantity'])
+                console.log('netPrice = ',product['netPrice'])
+
+                product['netPrice'] = product['unit_price'] * product['quantity']  //netprice
+                
+                product['discountAmount'] = (product['netPrice'] * product['discountPercent']) / 100 //discount
+                product['discountAmount'] = product['discountAmount'].toFixed(2)
+
+                product['netPrice'] = product['netPrice'].toFixed(2)  //rounding netproce by 2 decimals
+                console.log('netPrice = ',product['netPrice'])
+
+            },
+            deleteSelected(index){
+                this.selectedProducts.splice(index, 1)
+            },
+            // submitSelectedProducts(){
+            //     $("#productsModal").modal("hide")
+            // },
             firstFiveCustomers(){
                 let tempCustomers = []
                 for(var i=0; i<this.fetched_customers.length; i++){
@@ -122,6 +195,13 @@
                 axios.post(url, body).then(response=>{
                     console.log(response)
                     let products = response.data.products
+                    for(var i = 0; i < products.length; i++){
+                        products[i]['quantity'] = 0
+                        products[i]['netPrice'] = 0
+                        products[i]['discountPercent'] = 0
+                        products[i]['discountAmount'] = 0
+                        products[i]['taxAmount'] = 0
+                    }
                     this.fetched_products.push(...products)
                 })
             }
@@ -129,7 +209,7 @@
         mounted(){
             this.fetchCustomers(),
             this.fetchProducts()
-        }
+        },
     });
 </script>
 
