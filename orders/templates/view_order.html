@@ -178,23 +178,35 @@
                     resultText = 'Please select a customer'
                     resultType = 'error'
                 }
-                else if(this.GrandTotal == '0.00'){
-                    resultText = 'Please mention the product quantity and discount'
-                    resultType = 'error'
-                }
+                
+                
                 else{
-                    let url = '/order/create/'
-                    let body = {
-                        "order_no": new Date().getTime().toString(),
-                        "customer_name": this.selectedCustomer,
-                        "grand_total": this.GrandTotal,
-                        "lines": this.selectedProducts
+                    let canSend = true
+                    for(var i = 0; i < this.selectedProducts.length; i++){
+                        if(this.selectedProducts[i]['quantity'] == 0){
+                            canSend = false
+                            break
+                        }
                     }
-                    axios.post(url, body).then(response=>{
-                    console.log('Order Placed :')
-                    })
-
+                    if(canSend){
+                        let url = '/order/create/'
+                        let body = {
+                            "order_no": new Date().getTime().toString(),
+                            "customer_name": this.selectedCustomer,
+                            "grand_total": this.GrandTotal,
+                            "lines": this.selectedProducts
+                        }
+                        axios.post(url, body).then(response=>{
+                        console.log('Order Placed :')
+                        })
+                    }
+                    else{
+                        resultText = 'Please select a specific quantity'
+                        resultType = 'error'
+                    }
+                    
                 }
+                
                 new Noty({
                         text: resultText,
                         theme: 'mint',
