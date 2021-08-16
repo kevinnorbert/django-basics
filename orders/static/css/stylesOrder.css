@@ -74,3 +74,7 @@ input[type="number"]{
     width: 70px;
 }
 
+.result{
+    width: 98.5%;
+    margin-top: 20px;
+}
