@@ -6,77 +6,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/stylesOrder.css?v=2">
+    <link rel="stylesheet" type="text/css" href="/static/css/stylesOrder.css?v=5">
 </head>
 <body>
     <div id="vueapp" class="container">
-        <h1>ORDERS</h1>
-        <!--SELECT-->
-        <div class="jumbotron" style="height: 250px;">
-            <h3>Select customers and products here</h3>
-            <div class="dropdown selectGroup">
-                <button class="btn selectButton dropdown-toggle" type="button" data-toggle="dropdown">
-                    Select Customer
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu selectGroup">
-                    <li class="list-group-item"><input v-model="customerSearchSrting" class="form-control form-control-sm" type="text" placeholder="Search . . "></li>
-                    <li class="list-group-item" v-for="customer in firstFiveCustomers()" @click="selectedCustomer=customer">[[customer]]</li>
-                </ul>
-                <button type="button" class="btn selectButton" data-toggle="modal" data-target="#productsModal">
-                    Select Products
-                </button> 
-            </div>
-            <div class="container out"><h3>[[selectedCustomer]]</h3></div>
-        </div>
-        <!--SELECT-->
-
         <!--PRODUCTS-->
         <div>
-            <h3>Products</h3>
-            <div class="jumbotron scrollable" style="height: 250px;">
-                <table class="table">
-                    <tr>
-                        <th><strong>Product Name</strong></th>
-                        <th><strong>Product Code</strong></th>
-                        <th><strong>Product Unit Price</strong></th>
-                        <th><strong>Tax Rate</strong></th>
-                        <th><strong>Quantity</strong></th>
-                        <th><strong>Discount</strong></th>
-                        <th><strong>Actions</strong></th>
-                    </tr>
-                    <tr v-for="(product, index) in selectedProducts">
-                        <td>[[product.name]] </td>
-                        <td>[[product.code]]</td>
-                        <td>[[product.unit_price]]</td>
-                        <td>[[product.tax_rate]]</td>
-                        <td><input type="number" step="1" v-model="product.quantity" class="form-control" v-on:change="quantityProcess(product)" v-on:keyup="quantityProcess(product)"></td>
-                        <td><input type="number" step="1" v-model="product.discountPercent" class="form-control"  v-on:change="quantityProcess(product)" v-on:keyup="quantityProcess(product)"></td>
-                        <td><button type="button" class="btn selectButton" @click="deleteSelected(index)">DELETE</button></td>
-                    </tr>
-                </table>
+            <div class="firstDiv">
+                <div class="dropdown selectGroup">
+                    <button class="btn selectButton dropdown-toggle" type="button" data-toggle="dropdown">
+                        Select Customer
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu selectGroup">
+                        <li class="list-group-item"><input v-model="customerSearchSrting" class="form-control form-control-sm" type="text" placeholder="Search . . "></li>
+                        <li class="list-group-item" v-for="customer in firstFiveCustomers()" @click="selectedCustomer=customer">[[customer]]</li>
+                    </ul>
+                </div>
+                <div class="selectedCust"><h3>[[selectedCustomer]]</h3></div>
+                <div class="selectProd">
+                    <button type="button" class="btn selectButton" data-toggle="modal" data-target="#productsModal">
+                        Select Products
+                    </button> 
+                </div>
+            </div>
+
+            <div>
+                <h3>Products</h3>
+                <div class="jumbotron">
+                    <table class="table">
+                        <tr>
+                            <th><strong>Product Name</strong></th>
+                            <th><strong>Product Unit Price</strong></th>
+                            <th><strong>Tax Rate</strong></th>
+                            <th><strong>Quantity</strong></th>
+                            <th><strong>Discount</strong></th>
+                            <th><strong>Remove</strong></th>
+                        </tr>
+                    </table>
+                    <div class="scrollable" style="height: 150px;">
+                        <table class="table">
+                            <tr v-for="(product, index) in selectedProducts">
+                                <td>[[product.name]] </td>
+                                <td>[[product.unit_price]]</td>
+                                <td>[[product.tax_rate]]</td>
+                                <td><input type="number" step="1" v-model="product.quantity" class="form-control" v-on:change="quantityProcess(product)" v-on:keyup="quantityProcess(product)"></td>
+                                <td><input type="number" step="1" v-model="product.discountPercent" class="form-control"  v-on:change="quantityProcess(product)" v-on:keyup="quantityProcess(product)"></td>
+                                <td><button type="button" class="btn selectButton" @click="deleteSelected(index)">DELETE</button></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
         <!--PRODUCTS-->
 
         <div>
             <h3>Bill</h3>
-            <div class="jumbotron scrollable" style="height: 250px;">
+            <div class="jumbotron" style="height: 300px;">
                 <table class="table">
                     <tr>
                         <th><strong>Product Name</strong></th>
                         <th><strong>Quantity</strong></th>
+                        <th><strong>Net Price</strong></th>
                         <th><strong>Discount Amount</strong></th>
-                        <th><strong>Price</strong></th>
+                        <th><strong>Tax Amount</strong></th>
+                        <th><strong>Line Price</strong></th>
                         
                     </tr>
-                    <tr v-for="(product, index) in selectedProducts">
-                        <td>[[product.name]] </td>
-                        <td>[[product.quantity]]</td>
-                        <td>[[product.discountAmount]]</td>
-                        <td>[[product.netPrice]]</td>
+                </table>
+                <div class="scrollable" style="height: 150px;">
+                    <table>
+                        <tr v-for="(product, index) in selectedProducts">
+                            <td>[[product.name]] </td>
+                            <td>[[product.quantity]]</td>
+                            <td>[[product.netPrice]]</td>
+                            <td>[[product.discountAmount]]</td>
+                            <td>[[product.taxAmount]]</td>
+                            <td>[[product.linePrice]]</td>
+                        </tr>
+                    </table>                
+                </div>
+                <table class="table" style="width: 100%;">
+                    <tr>
+                        <th>Total</th>
+                        <td>Dummy</td>
+                        <td>Dummy</td>
+                        <td>Dummy</td>
+                        <td>Dummy</td>
+                        <td>Dummy</td>
                     </tr>
-                </table>                
+                </table>
             </div>
         </div>
         <!--MODAL-->
@@ -142,19 +162,33 @@
             fetched_customers : [],
             selectedCustomer: '',
             fetched_products: [],
-            selectedProducts:[]
+            selectedProducts:[],
+            grossPrice: 0.00,
+            totalTax: 0.00,
+            totalDiscount: 0.00,
+            GrandTotal: 0.00
         },
         methods:{
             quantityProcess(product){
-                console.log('Quantity = ',product['quantity'])
-                console.log('netPrice = ',product['netPrice'])
+                product['quantity'] = parseInt(product['quantity'])
 
-                product['netPrice'] = product['unit_price'] * product['quantity']  //netprice
+                product['netPrice'] = product['unit_price'] * product['quantity']       //netprice
+                product['linePrice'] = product['netPrice']      //line price  
                 
-                product['discountAmount'] = (product['netPrice'] * product['discountPercent']) / 100 //discount
-                product['discountAmount'] = product['discountAmount'].toFixed(2)
+                product['discountAmount'] = (product['linePrice'] * product['discountPercent']) / 100        //discount
+                
+                this.totalDiscount += product['discountAmount']
 
-                product['netPrice'] = product['netPrice'].toFixed(2)  //rounding netproce by 2 decimals
+                product['linePrice'] -= product['discountAmount']      //deducting discount
+                product['taxAmount'] = (product['linePrice'] * product['tax_rate']) / 100     //tax
+                product['linePrice'] += product['taxAmount']
+                
+
+                product['netPrice'] = product['netPrice'].toFixed(2)                //rounding netproce by 2 decimals
+                product['discountAmount'] = product['discountAmount'].toFixed(2)
+                product['linePrice'] = product['linePrice'].toFixed(2)
+                product['taxAmount'] =product['taxAmount'].toFixed(2)
+
                 console.log('netPrice = ',product['netPrice'])
 
             },
@@ -197,10 +231,12 @@
                     let products = response.data.products
                     for(var i = 0; i < products.length; i++){
                         products[i]['quantity'] = 0
-                        products[i]['netPrice'] = 0
-                        products[i]['discountPercent'] = 0
-                        products[i]['discountAmount'] = 0
-                        products[i]['taxAmount'] = 0
+                        products[i]['netPrice'] = '0.00'
+                        products[i]['discountPercent'] = '0'
+                        products[i]['discountAmount'] = '0.00'
+                        products[i]['taxAmount'] = '0.00'
+                        products[i]['linePrice'] = '0.00'
+                        
                     }
                     this.fetched_products.push(...products)
                 })
