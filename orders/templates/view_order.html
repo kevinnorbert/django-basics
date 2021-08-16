@@ -61,7 +61,7 @@
         </div>
         <!--PRODUCTS-->
 
-        <div>
+        <div v-show="showSummary">
             <h3>Bill</h3>
             <div class="jumbotron" style="height: 375px;">
                 <table class="table">
@@ -170,6 +170,11 @@
             totalDiscount: 0.00,
             GrandTotal: 0.00
         },
+        computed:{
+            showSummary(){
+                return this.selectedProducts.length > 0
+            }
+        },
         methods:{
             submit(){
                 let resultText = 'Order Placed Successfully'
@@ -181,7 +186,8 @@
                 
                 
                 else{
-                    let canSend = true
+                    
+                    let canSend = this.selectedProducts.length > 0
                     for(var i = 0; i < this.selectedProducts.length; i++){
                         if(this.selectedProducts[i]['quantity'] == 0){
                             canSend = false
