@@ -127,7 +127,7 @@
                                     <td>[[product.code]]</td>
                                     <td>[[product.unit_price]]</td>
                                     <td>[[product.tax_rate]]</td>
-                                    <td><input type="checkbox" :value="product" v-model="selectedProducts"></td>
+                                    <td><input type="checkbox" :value="product" v-model="selectedProducts" v-on:change="totalFinder()"></td>
                                 </tr>
                             </table>
                         </div>
@@ -224,6 +224,7 @@
             },
             deleteSelected(index){
                 this.selectedProducts.splice(index, 1)
+                this.totalFinder()
             },
             // submitSelectedProducts(){
             //     $("#productsModal").modal("hide")
