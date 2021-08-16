@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/stylesOrder.css?v=5">
+    <link rel="stylesheet" type="text/css" href="/static/css/stylesOrder.css?v=6">
 </head>
 <body>
     <div id="vueapp" class="container">
@@ -63,7 +63,7 @@
 
         <div>
             <h3>Bill</h3>
-            <div class="jumbotron" style="height: 300px;">
+            <div class="jumbotron" style="height: 375px;">
                 <table class="table">
                     <tr>
                         <th><strong>Product Name</strong></th>
@@ -97,6 +97,7 @@
                         <td>[[GrandTotal]]</td>
                     </tr>
                 </table>
+                <button class="btn selectButton submit" @click="submit()">Submit</button>
             </div>
         </div>
         <!--MODAL-->
@@ -170,6 +171,38 @@
             GrandTotal: 0.00
         },
         methods:{
+            submit(){
+                let resultText = 'Order Placed Successfully'
+                let resultType = 'success'
+                if(this.selectedCustomer == ''){
+                    resultText = 'Please select a customer'
+                    resultType = 'error'
+                }
+                else if(this.GrandTotal == '0.00'){
+                    resultText = 'Please mention the product quantity and discount'
+                    resultType = 'error'
+                }
+                else{
+                    let url = '/order/create/'
+                    let body = {
+                        "order_no": new Date().getTime().toString(),
+                        "customer_name": this.selectedCustomer,
+                        "grand_total": this.GrandTotal,
+                        "lines": this.selectedProducts
+                    }
+                    axios.post(url, body).then(response=>{
+                    console.log('Order Placed :')
+                    })
+
+                }
+                new Noty({
+                        text: resultText,
+                        theme: 'mint',
+                        type: resultType,
+                        timeout: 2000,
+                        layout: 'topRight'
+                    }).show();
+            },
             totalFinder(){
                 let totalQuantity = 0
                 let grossPrice = 0.00, totalTax = 0.00, totalDiscount = 0.00, GrandTotal = 0.00
@@ -197,6 +230,8 @@
                 this.totalTax = totalTax.toFixed(2)
                 this.totalDiscount = totalDiscount.toFixed(2)
                 this.GrandTotal = GrandTotal.toFixed(2)
+
+                console.log(typeof(this.GrandTotal))
 
             },
             quantityProcess(product){

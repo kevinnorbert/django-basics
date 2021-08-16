@@ -9,6 +9,10 @@ h1,h3{
 .selectButton{
     background-color: rgb(168, 166, 166);
 }
+.submit{
+    margin-top: 50px;
+    float: right;
+}
 
 .list-group-item:hover:not(:first-child){
     background-color: rgb(168, 166, 166);

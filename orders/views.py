@@ -26,14 +26,14 @@ def create_order(request):
         lines = request_json['lines']
         product_codes = []
         for line in lines:
-            product_code = line['product_code']
+            product_code = line['code']
             product_codes.append(product_code)
         products = Product.objects.filter(code__in=product_codes).values_list('code', flat=True)
         #Product.objects.filter(unit_price__contains=20)
         print(products)
 
         for line in lines:
-            request_product_code = line['product_code']            
+            request_product_code = line['code']            
             if not request_product_code in products:
                 product_codes_exists = False
                 response = {
@@ -51,10 +51,10 @@ def create_order(request):
                 for line in lines:
                     order_line_object = OrderLine()
                     order_line_object.order = order_object
-                    order_line_object.product_name = line['product_name']
-                    order_line_object.product_code = line['product_code']
+                    order_line_object.name = line['name']
+                    order_line_object.code = line['code']
                     order_line_object.unit_price = line['unit_price']
-                    order_line_object.qty = line['qty']
+                    order_line_object.quantity = line['quantity']
                     order_line_object.tax_rate = line['tax_rate']
                     order_line_object.save()
                 
